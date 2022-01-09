@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 import uuid
 import db
 
@@ -18,6 +19,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+class Note(BaseModel):
+    name: str
+    id: str
+    content: str
 
 @app.get("/api/notes")
 def get_notes():
@@ -25,17 +30,17 @@ def get_notes():
     return notes
 
 @app.post('/api/notes')
-def create_note(note):
-    id = uuid.uuid4()
+def create_note(note: Note):
+    id = str(uuid.uuid4())
     return db.save_note(id, note.name, note.content)
 
 @app.put('/api/notes/{id}')
-def update_note(id, note):
+def update_note(id, note: Note):
     return db.save_note(id, note.name, note.content)
 
 @app.delete('/api/notes/{id}')
-def delete_note():
-    pass
+def delete_note(id):
+    db.delete_note(id)
 
 @app.get("/api/notes/{id}")
 def get_note(id):

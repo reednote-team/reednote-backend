@@ -1,3 +1,4 @@
+import os
 import sqlite3
 from pathlib import Path
 import json as jsoner
@@ -42,13 +43,21 @@ def save_note(uid, name, content):
     conn.execute(
         f"REPLACE INTO NOTES (NOTE_UID, NOTE_NAME) VALUES ('{uid}', '{name}');"
     )
+    conn.commit()
     with open(f"./notes/{uid}.md", "w") as note_file:
         note_file.write(content)
-    conn.commit()
     return jsoner.dumps({
         "id": uid,
         "name": name
     })
+
+def delete_note(uid):
+    conn = sqlite3.connect("reednote.db")
+    conn.execute(
+        f"DELETE FROM NOTES WHERE NOTE_UID == '{uid}';"
+    )
+    conn.commit()
+    os.remove(f'./notes/{uid}.md')
 
 
 def db_init():
