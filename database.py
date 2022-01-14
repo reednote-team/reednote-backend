@@ -2,6 +2,7 @@ import os
 import sqlite3
 from pathlib import Path
 import json as jsoner
+from password_validation import hash_password
 
 
 def create_user_table(conn):
@@ -11,9 +12,23 @@ def create_user_table(conn):
         USER_NAME TEXT NOT NULL,
         USER_EMAIL TEXT NOT NULL,
         USER_LEVEL CHAR(1) NOT NULL,
-        USER_PW_VALIDATION TEXT NOT NULL
+        USER_HASHED_PW CHAR(64) NOT NULL
     );
     """)
+
+def create_user(user_id, user_name, user_email, user_level, user_password):
+    conn = sqlite3.connect("reednote.db")
+    cur = conn.cursor()
+    cur.execute(f"SELECT * FROM USERS WHERE USER_EMAIL == '{ user_email }';")
+    users = cur.fetchall()
+    if (len(users) != 0): 
+        return {'status': 'email_already_exists', 'user_id': ''}
+    else:
+        hashed_password = hash_password(user_password, user_id)
+        conn.execute(
+            f"REPLACE INTO USERS (USER_ID, USER_NAME, USER_EMAIL, USER_LEVEL, USER_HASHED_PW) VALUES ('{user_id}', '{user_name}', '{user_email}', '{user_level}', '{hashed_password}');"
+        )
+        return {'status': 'success', 'user_id': user_id}
 
 
 def create_note_table(conn):
@@ -70,6 +85,7 @@ def delete_note(uid):
     )
     conn.commit()
     os.remove(f'./notes/{uid}.md')
+
 
 
 def db_init():
