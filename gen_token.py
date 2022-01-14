@@ -1,10 +1,8 @@
-from msilib.schema import Error
+from config import jwt_encoding_salt
 import time
-from webbrowser import get
 import jwt
 
-# validation
-key = "Reednote2022"
+key = jwt_encoding_salt
 
 def get_token(payload: dict) -> str:
     # header
@@ -19,5 +17,5 @@ def get_token(payload: dict) -> str:
 def use_token(token: str) -> dict:
     try:
         return jwt.decode(token, key=key, algorithms="HS256")
-    except Error:
+    except jwt.DecodeError:
         return {} 
