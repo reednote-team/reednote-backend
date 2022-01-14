@@ -4,15 +4,26 @@ from pathlib import Path
 import json as jsoner
 
 
+def create_user_table(conn):
+    conn.execute("""
+    CREATE TABLE IF NOT EXISTS USERS (
+        USER_ID CHAR(36) PRIMARY KEY NOT NULL, 
+        USER_NAME TEXT NOT NULL,
+        USER_EMAIL TEXT NOT NULL,
+        USER_LEVEL CHAR(1) NOT NULL,
+        USER_PW_VALIDATION TEXT NOT NULL
+    );
+    """)
+
+
 def create_note_table(conn):
-    conn.execute(
-        """
-  CREATE TABLE IF NOT EXISTS NOTES (
-    NOTE_UID CHAR(36) PRIMARY KEY NOT NULL, 
-    NOTE_NAME TEXT NOT NULL
-  );
-  """
-    )
+    conn.execute("""
+    CREATE TABLE IF NOT EXISTS NOTES (
+        NOTE_ID CHAR(36) PRIMARY KEY NOT NULL,
+        NOTE_NAME TEXT NOT NULL,
+        NOTE_OWNER CHAR(36) NOT NULL
+    );
+    """)
 
 
 def load_notes():
@@ -51,6 +62,7 @@ def save_note(uid, name, content):
         "name": name
     })
 
+
 def delete_note(uid):
     conn = sqlite3.connect("reednote.db")
     conn.execute(
@@ -66,6 +78,7 @@ def db_init():
     if not store_folder.is_dir():
         store_folder.mkdir()
     create_note_table(conn)
+    create_user_table(conn)
 
 
 db_init()
