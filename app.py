@@ -24,6 +24,14 @@ class Note(BaseModel):
     id: str
     content: str
 
+class User(BaseModel):
+    user_id: str
+    user_name: str
+    user_email: str
+    user_level: str
+    user_password: str
+
+
 @app.get("/api/notes")
 def get_notes():
     notes = database.load_notes()
