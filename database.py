@@ -5,6 +5,7 @@ import json as jsoner
 from password_validation import hash_password
 import uuid
 
+
 def create_user_table(conn):
     conn.execute("""
     CREATE TABLE IF NOT EXISTS USERS (
@@ -16,64 +17,57 @@ def create_user_table(conn):
     );
     """)
 
-def create_user(user_id, user_name, user_email, user_level, user_password):
-    ''' Create User
-    Parameters:
-        user_id
-        user_name
-        user_email
-        user_level
-        user_password
-    Returns:
-        { 'status': 'email_already_exists', 'user_id': '' }
-        { 'status': 'success', 'user_id': user_id }
-    '''
+
+def save_user(id, name, email, password):
     conn = sqlite3.connect("reednote.db")
     cur = conn.cursor()
-    cur.execute(f"SELECT * FROM USERS WHERE USER_EMAIL == '{ user_email }';")
+    cur.execute(f"SELECT * FROM USERS WHERE USER_EMAIL == '{ email }';")
     users = cur.fetchall()
-    if (len(users) != 0): 
-        return { 'status': 'email_already_exists', 'user_id': '' }
+    if (len(users) != 0):
+        return {'status': 'email_already_exists', 'user_id': ''}
     else:
-        hashed_password = hash_password(user_password, user_id)
-        conn.execute(
-            f"INSERT INTO USERS (USER_ID, USER_NAME, USER_EMAIL, USER_LEVEL, USER_HASHED_PW) VALUES ('{ user_id }', '{ user_name }', '{ user_email }', '{ user_level }', '{ hashed_password }');"
-        )
+        hashed_password = hash_password(password, id)
+        conn.execute(f"""
+        INSERT INTO USERS (
+            USER_ID, 
+            USER_NAME, 
+            USER_EMAIL, 
+            USER_LEVEL, 
+            USER_HASHED_PW
+        ) VALUES (
+            '{ id }', 
+            '{ name }', 
+            '{ email }', 
+            '1', 
+            '{ hashed_password }
+        ');
+        """)
         conn.commit()
-        return { 'status': 'success', 'user_id': user_id }
-
-def login_check(user_id, user_email, user_password):
-    ''' Login Check
-    Parameters:
-        user_id - can be queried from DB by method get_uuid_by_email()
-        user_email
-        user_password
-    Returns:
-        { 'status': 'invalid_userid', 'user_id': user_id }
-        { 'status': 'success', 'user_id': user_id }
-        { 'status': 'password_not_matched', 'user_id': user_id }
-    '''
-    conn = sqlite3.connect("reednote.db")
-    cur = conn.cursor()
-    cur.execute(f"SELECT * FROM USERS WHERE USER_ID == '{ user_id }';")
-    user = cur.fetchall()
-    if (len(user) == 0):
-        return { 'status': 'invalid_userid', 'user_id': user_id }
-    elif (user[0][4] == hash_password(user_password, user_id)):
-        return { 'status': 'success', 'user_id': user_id }
-    else:
-        return { 'status': 'password_not_matched', 'user_id': user_id }
+        return {'status': 'success', 'user_id': id}
 
 
-def get_uuid_by_email(user_email):
+def get_user_by_email(user_email):
     conn = sqlite3.connect("reednote.db")
     cur = conn.cursor()
     cur.execute(f"SELECT * FROM USERS WHERE USER_EMAIL == '{ user_email }';")
     user = cur.fetchall()
-    if (len(user) == 0):
-        return ''
+    if len(user) == 0:
+        return None
     else:
-        return user[0][0]
+        return user[0]
+
+
+def load_user(email, password):
+    user = get_user_by_email(email)
+    if user is None:
+        return {'status': 'email_not_exist', 'user_id': ''}
+    else:
+        user_id = user[0][0]
+        input_hasked_pw = hash_password(user[0][4], password)
+        if input_hasked_pw == user[0][0]:
+            return {'status': 'success', 'user_id': user_id}
+        else:
+            return {'status': 'password_not_matched', 'user_id': user_id}
 
 
 def create_note_table(conn):
@@ -132,7 +126,6 @@ def delete_note(uid):
     os.remove(f'./notes/{uid}.md')
 
 
-
 def db_init():
     conn = sqlite3.connect("reednote.db")
     store_folder = Path("./notes")
@@ -141,14 +134,22 @@ def db_init():
     create_note_table(conn)
     create_user_table(conn)
 
-def test():
-    create_user(str(uuid.uuid4()), "Ex10si0n", "p1908326@ipm.edu.mo", '1', 'sbyzb')
-    create_user(str(uuid.uuid4()), "KevynTang", "p1908XXX@ipm.edu.mo", '1', 'sbyzb')
 
-    print(login_check(get_uuid_by_email('p1908326@ipm.edu.mo'), 'p1908326@ipm.edu.mo', 'sbyzb'))
-    print(login_check(get_uuid_by_email('p1908XXX@ipm.edu.mo'), 'p1908XXX@ipm.edu.mo', 'sbyzb'))
-    print(login_check(get_uuid_by_email('p1908XXX@ipm.edu.mo'), 'p1908XXX@ipm.edu.mo', 'qwerty'))
-    print(login_check(get_uuid_by_email('p1908345@ipm.edu.mo'), 'p1908XXX@ipm.edu.mo', 'qwerty'))
+def test():
+    user_signup(str(uuid.uuid4()), "Ex10si0n",
+                "p1908326@ipm.edu.mo", '1', 'sbyzb')
+    user_signup(str(uuid.uuid4()), "KevynTang",
+                "p1908XXX@ipm.edu.mo", '1', 'sbtky')
+
+    print(load_user(get_user_by_email('p1908326@ipm.edu.mo'),
+          'p1908326@ipm.edu.mo', 'sbyzb'))
+    print(load_user(get_user_by_email('p1908XXX@ipm.edu.mo'),
+          'p1908XXX@ipm.edu.mo', 'sbyzb'))
+    print(load_user(get_user_by_email('p1908XXX@ipm.edu.mo'),
+          'p1908XXX@ipm.edu.mo', 'qwerty'))
+    print(load_user(get_user_by_email('p1908345@ipm.edu.mo'),
+          'p1908XXX@ipm.edu.mo', 'qwerty'))
+
 
 db_init()
 test()

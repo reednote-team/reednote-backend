@@ -1,4 +1,4 @@
-# from config import password_encoding_salt
+from config import password_encoding_salt
 import hashlib
 
 def hash_password(password, password_encoding_salt):
@@ -7,4 +7,4 @@ def hash_password(password, password_encoding_salt):
 
 if __name__ == '__main__':
     hashed = hash_password("steve", password_encoding_salt)
-    print(hashed)
+

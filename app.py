@@ -4,6 +4,15 @@ from pydantic import BaseModel
 import uuid
 import database
 
+class Note(BaseModel):
+    id: str
+    name: str
+    content: str
+
+class User(BaseModel):
+    email: str
+    password: str
+
 app = FastAPI()
 
 origins = [
@@ -19,18 +28,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-class Note(BaseModel):
-    name: str
-    id: str
-    content: str
+@app.post("/api/auth/signup")
+def user_signup(user: User):
+    id = str(uuid.uuid4())
+    database.save_user(id, user.email, user.password)
 
-class User(BaseModel):
-    user_id: str
-    user_name: str
-    user_email: str
-    user_level: str
-    user_password: str
-
+@app.post("/api/auth/login")
+def user_login():
+    database.fetch_user()
 
 @app.get("/api/notes")
 def get_notes():
