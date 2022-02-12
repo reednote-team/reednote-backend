@@ -4,7 +4,8 @@
   "info": {
     "singularName": "note",
     "pluralName": "notes",
-    "displayName": "Note"
+    "displayName": "Note",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -17,7 +18,7 @@
     "content": {
       "type": "richtext"
     },
-    "author": {
+    "user": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "plugin::users-permissions.user",

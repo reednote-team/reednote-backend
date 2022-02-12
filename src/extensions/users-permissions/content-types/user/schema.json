@@ -67,7 +67,7 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::note.note",
-      "mappedBy": "author"
+      "mappedBy": "user"
     }
   }
 }
