@@ -9,6 +9,7 @@ const { createCoreController } = require('@strapi/strapi').factories;
 module.exports = createCoreController('api::public-note.public-note', ({ strapi }) => ({
 
   async find(ctx) {
+
     const { data, meta } = await super.find(ctx);
     const cookedData = []
     data.forEach(note => {
@@ -18,8 +19,11 @@ module.exports = createCoreController('api::public-note.public-note', ({ strapi 
       })
     });
     return { data: cookedData, meta };
+
   },
+
   async findOne(ctx) {
+
     const { data, meta } = await super.findOne(ctx);
     const cookedData = {
       id: data.id,
@@ -27,6 +31,7 @@ module.exports = createCoreController('api::public-note.public-note', ({ strapi 
       content: data.attributes.content
     }
     return { data: cookedData, meta };
+    
   },
 
 }));
