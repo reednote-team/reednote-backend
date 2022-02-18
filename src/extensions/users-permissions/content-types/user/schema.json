@@ -68,6 +68,12 @@
       "relation": "oneToMany",
       "target": "api::note.note",
       "mappedBy": "author"
+    },
+    "columns": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::column.column",
+      "mappedBy": "owner"
     }
   }
 }

@@ -1,31 +1,29 @@
 {
   "kind": "collectionType",
-  "collectionName": "notes",
+  "collectionName": "columns",
   "info": {
-    "singularName": "note",
-    "pluralName": "notes",
-    "displayName": "Note",
-    "description": ""
+    "singularName": "column",
+    "pluralName": "columns",
+    "displayName": "Column"
   },
   "options": {
     "draftAndPublish": true
   },
   "pluginOptions": {},
   "attributes": {
-    "title": {
+    "columnName": {
       "type": "string"
     },
-    "content": {
-      "type": "richtext"
+    "notes": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::note.note"
     },
-    "author": {
+    "owner": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "plugin::users-permissions.user",
-      "inversedBy": "notes"
-    },
-    "hasPublic": {
-      "type": "boolean"
+      "inversedBy": "columns"
     }
   }
 }

@@ -33,7 +33,7 @@ module.exports = createCoreController('api::note.note', ({ strapi }) => ({
         author: note.attributes.author.data.id
       })
     });
-    
+
     return { data: cookedData, meta }
 
   },
@@ -45,17 +45,58 @@ module.exports = createCoreController('api::note.note', ({ strapi }) => ({
     populateList.push(ctx.query.populate)
     ctx.query.populate = populateList.join(',')
     const { data, meta } = await super.findOne(ctx);
-    if (data.attributes.author.data.id != ctx.state.user.id) {
-      ctx.status = 401
-      return
+
+    if (!data.attributes.author) {
+
+      if (data.attributes.hasPublic) {
+
+        const cookedData = {
+          id: data.id,
+          title: data.attributes.title,
+          content: data.attributes.content
+        }
+        return { data: cookedData, meta };
+
+      }
+
+      else {
+        ctx.status = 401
+        return
+      }
+
     }
-    const cookedData = {
-      id: data.id,
-      title: data.attributes.title,
-      author: data.attributes.author.data.id,
-      content: data.attributes.content
+
+    else if (data.attributes.author.data.id != ctx.state.user.id) {
+
+      if (data.attributes.hasPublic) {
+
+        const cookedData = {
+          id: data.id,
+          title: data.attributes.title,
+          author: data.attributes.author.data.id,
+          content: data.attributes.content
+        }
+
+      }
+
+      else {
+
+        ctx.status = 401
+        return
+
+      }
+
     }
-    return { data: cookedData, meta };
+    else {
+
+      const cookedData = {
+        id: data.id,
+        title: data.attributes.title,
+        author: data.attributes.author.data.id,
+        content: data.attributes.content
+      }
+      return { data: cookedData, meta };
+    }
     
   },
 

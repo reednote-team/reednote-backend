@@ -1,9 +1,9 @@
 'use strict';
 
 /**
- * public-note router.
+ * column router.
  */
 
 const { createCoreRouter } = require('@strapi/strapi').factories;
 
-module.exports = createCoreRouter('api::public-note.public-note');
+module.exports = createCoreRouter('api::column.column');
