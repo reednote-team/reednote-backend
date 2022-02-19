@@ -53,6 +53,7 @@ module.exports = createCoreController('api::note.note', ({ strapi }) => ({
         const cookedData = {
           id: data.id,
           title: data.attributes.title,
+          author: -1,
           content: data.attributes.content
         }
         return { data: cookedData, meta };
