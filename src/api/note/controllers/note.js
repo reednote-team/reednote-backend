@@ -54,6 +54,7 @@ module.exports = createCoreController('api::note.note', ({ strapi }) => ({
           id: data.id,
           title: data.attributes.title,
           author: -1,
+          hasPublic: data.attributes.hasPublic,
           content: data.attributes.content
         }
         return { data: cookedData, meta };
@@ -75,6 +76,7 @@ module.exports = createCoreController('api::note.note', ({ strapi }) => ({
           id: data.id,
           title: data.attributes.title,
           author: data.attributes.author.data.id,
+          hasPublic: data.attributes.hasPublic,
           content: data.attributes.content
         }
 
@@ -94,6 +96,7 @@ module.exports = createCoreController('api::note.note', ({ strapi }) => ({
         id: data.id,
         title: data.attributes.title,
         author: data.attributes.author.data.id,
+        hasPublic: data.attributes.hasPublic,
         content: data.attributes.content
       }
       return { data: cookedData, meta };
