@@ -69,10 +69,10 @@
       "target": "api::note.note",
       "mappedBy": "author"
     },
-    "columns": {
+    "noteSets": {
       "type": "relation",
       "relation": "oneToMany",
-      "target": "api::column.column",
+      "target": "api::note-set.note-set",
       "mappedBy": "owner"
     }
   }

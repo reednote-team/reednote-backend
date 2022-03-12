@@ -1,10 +1,10 @@
 {
   "kind": "collectionType",
-  "collectionName": "notes",
+  "collectionName": "note_sets",
   "info": {
-    "singularName": "note",
-    "pluralName": "notes",
-    "displayName": "Note",
+    "singularName": "note-set",
+    "pluralName": "note-sets",
+    "displayName": "NoteSet",
     "description": ""
   },
   "options": {
@@ -12,26 +12,29 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "title": {
+    "name": {
       "type": "string"
     },
-    "content": {
+    "description": {
       "type": "richtext"
     },
-    "author": {
+    "notes": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::note.note",
+      "mappedBy": "noteSet"
+    },
+    "owner": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "plugin::users-permissions.user",
-      "inversedBy": "notes"
+      "inversedBy": "noteSets"
     },
     "hasPublic": {
       "type": "boolean"
     },
-    "noteSet": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::note-set.note-set",
-      "inversedBy": "notes"
+    "color": {
+      "type": "string"
     }
   }
 }

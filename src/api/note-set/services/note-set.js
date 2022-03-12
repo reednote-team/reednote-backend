@@ -1,9 +1,9 @@
 'use strict';
 
 /**
- * column service.
+ * note-set service.
  */
 
 const { createCoreService } = require('@strapi/strapi').factories;
 
-module.exports = createCoreService('api::column.column');
+module.exports = createCoreService('api::note-set.note-set');
