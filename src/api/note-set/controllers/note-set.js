@@ -50,18 +50,18 @@ module.exports = createCoreController('api::note-set.note-set', ({ strapi }) => 
 
       // else, push to note list and return
       cookedData.push({
-        id: data.id,
-        name: data.attributes.name,
-        description: data.attributes.description,
-        owner: data.attributes.owner.data.id,
-        color: data.attributes.color,
-        notes: ((noteSet) => {
+        id: noteSet.id,
+        name: noteSet.attributes.name,
+        description: noteSet.attributes.description,
+        owner: noteSet.attributes.owner.data.id,
+        color: noteSet.attributes.color,
+        notes: (() => {
           const notes = []
-          data.attributes.notes.data.forEach((note) => {
+          noteSet.attributes.notes.data.forEach((note) => {
             notes.push(note.id)
           })
           return notes
-        })(noteSet)
+        })()
       })
     });
     return { data: cookedData, meta }
