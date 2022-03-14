@@ -20,7 +20,7 @@ module.exports = createCoreController('api::note.note', ({ strapi }) => ({
       id: data.id,
       title: data.attributes.title,
       author: data.attributes.author.data.id,
-      noteSet: note.attributes.noteSet.data ? note.attributes.noteSet.data.id : -1,
+      noteSet: data.attributes.noteSet.data ? data.attributes.noteSet.data.id : -1,
       hasPublic: data.attributes.hasPublic,
       content: data.attributes.content
     }
