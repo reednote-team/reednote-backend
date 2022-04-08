@@ -53,7 +53,7 @@ When finished, remember to change the server configuration in `config/server.js`
 module.exports = ({ env }) => ({
   host: env('HOST', '0.0.0.0'),
   port: env.int('PORT', 1779),
-});xxxxxxxxxx module.exports = ({ env }) => ({  host: env('HOST', '0.0.0.0'),  port: env.int('PORT', 1779),});
+});
 ```
 
 run in development mode or build a production version with:
